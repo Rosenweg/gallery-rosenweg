@@ -855,7 +855,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
         }
 
         (binding.directoriesRefreshLayout.layoutParams as RelativeLayout.LayoutParams)
-            .addRule(RelativeLayout.BELOW, R.id.directories_switch_searching)
+            .addRule(RelativeLayout.BELOW, R.id.rw_orte) // Rosenweg: unter den Chips Telefon/Nextcloud
     }
 
     private fun setupGridLayoutManager() {
