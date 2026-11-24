@@ -1,5 +1,6 @@
 package org.fossify.gallery.activities
 
+import org.fossify.gallery.helpers.alsOrtChip
 import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
@@ -230,6 +231,16 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
         setupOptionsMenu()
         refreshMenuItems()
 
+        // Rosenweg: Fotos aus der Nextcloud (Regel 6); nicht beim Auswaehlen fuer andere Apps
+        binding.rwOrte.beVisibleIf(!mIsThirdPartyIntent)
+        binding.rwOrtNextcloud.setOnClickListener {
+            startActivity(Intent(this, NextcloudGalerieActivity::class.java))
+        }
+        if (savedInstanceState == null && !mIsThirdPartyIntent) {
+            ch.rosenweg4303.cloud.Hinweis.beimErstenStart(this, "Deine Fotos und Videos aus der Nextcloud")
+            ch.rosenweg4303.cloud.Einstellungen.abgleichen(this) { recreate() }
+        }
+
         setupEdgeToEdge(
             padBottomImeAndSystem = listOf(binding.directoriesGrid)
         )
@@ -291,6 +302,8 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
     override fun onResume() {
         super.onResume()
         updateMenuColors()
+        binding.rwOrtTelefon.alsOrtChip(aktiv = true, symbol = org.fossify.commons.R.drawable.ic_phone_vector)
+        binding.rwOrtNextcloud.alsOrtChip(aktiv = false)
         config.isThirdPartyIntent = false
         mDateFormat = config.dateFormat
         mTimeFormat = getTimeFormat()

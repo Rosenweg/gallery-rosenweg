@@ -288,6 +288,14 @@
             </intent-filter>
         </activity>
 
+        <!-- Rosenweg: Fotos und Videos aus der Nextcloud -->
+        <activity
+            android:name=".activities.NextcloudGalerieActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="@string/nc_titel"
+            android:parentActivityName=".activities.MainActivity" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
