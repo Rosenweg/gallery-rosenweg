@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nc_titel">Nextcloud</string>
+    <string name="nc_telefon">Telefon</string>
+    <string name="nc_anmelden">Bei der Rosenweg-Nextcloud anmelden</string>
+    <string name="nc_nicht_angemeldet">Melde dich an, um deine Fotos aus der Nextcloud zu sehen (Persönlich/Kamera und dein ganzer persönlicher Ordner).</string>
+    <string name="nc_leer">Hier sind keine Fotos oder Videos.</string>
+    <string name="nc_wird_geladen">%s wird geladen …</string>
+    <string name="nc_fehler">Nextcloud: %s</string>
+    <string name="nc_loeschen_frage">„%s“ in den Papierkorb der Nextcloud verschieben?</string>
+    <string name="nc_loeschen">In den Papierkorb</string>
+    <string name="nc_im_browser">In der Nextcloud im Browser öffnen</string>
+</resources>
