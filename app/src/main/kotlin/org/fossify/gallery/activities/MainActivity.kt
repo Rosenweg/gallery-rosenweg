@@ -155,6 +155,8 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
     override var isSearchBarEnabled = true
     
     companion object {
+        /** Rosenweg: aus der Nextcloud-Ansicht "Telefon" gewaehlt - nicht wieder umleiten. */
+        const val ROSENWEG_TELEFON_ANSICHT = "rosenweg_telefon_ansicht"
         private const val PICK_MEDIA = 2
         private const val PICK_WALLPAPER = 3
         private const val LAST_MEDIA_CHECK_PERIOD = 3000L
@@ -235,6 +237,18 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
         binding.rwOrte.beVisibleIf(!mIsThirdPartyIntent)
         binding.rwOrtNextcloud.setOnClickListener {
             startActivity(Intent(this, NextcloudGalerieActivity::class.java))
+        }
+        // Stefan 25.11.2026: mit Rosenweg Geraet nur die Nextcloud (lokal ist nur Zwischenspeicher);
+        // ohne Geraet startet die Nextcloud-Ansicht, wenn ein Zugang da ist - "Telefon" fuehrt zurueck.
+        if (savedInstanceState == null && !mIsThirdPartyIntent && !intent.getBooleanExtra(ROSENWEG_TELEFON_ANSICHT, false)) {
+            val geraet = ch.rosenweg4303.cloud.RosenwegAnmeldung.geraetDa(this)
+            if (geraet || ch.rosenweg4303.cloud.Ablage.webDav(this) != null) {
+                startActivity(Intent(this, NextcloudGalerieActivity::class.java))
+                if (geraet) {
+                    finish()
+                    return
+                }
+            }
         }
         if (savedInstanceState == null && !mIsThirdPartyIntent) {
             ch.rosenweg4303.cloud.Hinweis.beimErstenStart(this, "Deine Fotos und Videos aus der Nextcloud")

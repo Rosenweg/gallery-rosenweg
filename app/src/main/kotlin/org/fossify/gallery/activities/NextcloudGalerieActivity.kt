@@ -61,7 +61,17 @@ class NextcloudGalerieActivity : SimpleActivity() {
             ncRefresh.setOnRefreshListener { laden() }
             ncLogin.paintFlags = ncLogin.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             ncLogin.setOnClickListener { startActivity(Intent(this@NextcloudGalerieActivity, AnmeldenActivity::class.java)) }
-            ncOrtIntern.setOnClickListener { finish() }
+            ncOrtIntern.setOnClickListener {
+                // ohne Geraet: zur Telefon-Ansicht (MainActivity), auch wenn wir direkt gestartet wurden
+                startActivity(Intent(this@NextcloudGalerieActivity, MainActivity::class.java)
+                    .putExtra(MainActivity.ROSENWEG_TELEFON_ANSICHT, true)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP))
+                finish()
+            }
+            // Stefan 25.11.2026: auf geteilten Telefonen (Rosenweg Geraet) gibt es nur die Nextcloud -
+            // lokal liegt dort nur Zwischenspeicher, der beim Abmelden geloescht wird.
+            ncOrte.beVisibleIf(!ch.rosenweg4303.cloud.RosenwegAnmeldung.geraetDa(this@NextcloudGalerieActivity))
+            ncWartet.setOnClickListener { wartendeAnstossen() }
         }
     }
 
@@ -73,6 +83,9 @@ class NextcloudGalerieActivity : SimpleActivity() {
         binding.ncLogin.setTextColor(getProperPrimaryColor())
         binding.ncOrtIntern.alsOrtChip(aktiv = false, symbol = org.fossify.commons.R.drawable.ic_phone_vector)
         binding.ncOrtNextcloud.alsOrtChip(aktiv = true)
+        wartendeZeigen()
+        handler.removeCallbacks(wartendePruefen)
+        handler.postDelayed(wartendePruefen, 10_000)
         val vorher = dav
         dav = Ablage.webDav(this)
         if (dav == null) {
@@ -199,6 +212,56 @@ class NextcloudGalerieActivity : SimpleActivity() {
         if (punkte.isEmpty()) return
         getAlertDialogBuilder().setItems(punkte.map { it.first }.toTypedArray()) { _, i -> punkte[i].second() }
             .setTitle(e.name).show()
+    }
+
+    // ─── Was noch aufs Hochladen wartet (Kamera + Galerie) ─────────────────────
+    private val handler = android.os.Handler(android.os.Looper.getMainLooper())
+    private val wartendePruefen = object : Runnable {
+        override fun run() {
+            wartendeZeigen()
+            handler.postDelayed(this, 10_000)
+        }
+    }
+
+    override fun onPause() {
+        handler.removeCallbacks(wartendePruefen)
+        super.onPause()
+    }
+
+    /** Eigene Warteschlange + die der Kamera (ueber deren HochladenStatus, nur Rosenweg-Signatur). */
+    private fun wartendeZeigen() {
+        ensureBackgroundThread {
+            var offen = Hochladen.ausstehend(this)
+            var fehler = Hochladen.fehlgeschlagen(this)
+            for (paket in HOCHLADER) {
+                try {
+                    contentResolver.call(Uri.parse("content://$paket.rosenweg.hochladen"), "status", null, null)?.let {
+                        offen += it.getInt("ausstehend"); fehler += it.getInt("fehlgeschlagen")
+                    }
+                } catch (e: Exception) {
+                    // App nicht installiert oder alte Fassung: nichts anzeigen
+                }
+            }
+            runOnUiThread {
+                binding.ncWartet.setTextColor(getProperTextColor())
+                binding.ncWartet.text = when {
+                    fehler > 0 -> getString(R.string.nc_wartet_fehler, fehler)
+                    offen > 0 -> getString(R.string.nc_wartet, offen)
+                    else -> ""
+                }
+                binding.ncWartet.beVisibleIf(offen + fehler > 0)
+            }
+        }
+    }
+
+    private fun wartendeAnstossen() {
+        Hochladen.anstossen(this, fehlerNochmal = true)
+        ensureBackgroundThread {
+            for (paket in HOCHLADER) {
+                try { contentResolver.call(Uri.parse("content://$paket.rosenweg.hochladen"), "anstossen", null, null) } catch (e: Exception) { }
+            }
+        }
+        toast(R.string.nc_wird_geladen_kurz)
     }
 
     // ─── Bearbeiten (Stefan 25.11.2026): Editor der Galerie, Ergebnis als neue Datei daneben ───
@@ -338,6 +401,7 @@ class NextcloudGalerieActivity : SimpleActivity() {
         val FOTO = setOf("jpg", "jpeg", "png", "heic", "heif", "webp", "gif", "avif")
         val VIDEO = setOf("mp4", "3gp", "mkv", "webm", "mov")
         val BEARBEITBAR = setOf("jpg", "jpeg", "png", "webp")
+        val HOCHLADER = listOf("ch.rosenweg4303.camera")
         const val BEARBEITEN = 4711
     }
 }

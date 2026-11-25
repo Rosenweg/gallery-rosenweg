@@ -70,11 +70,22 @@
                     android:textSize="@dimen/normal_text_size" />
             </LinearLayout>
 
+            <!-- Rosenweg: was noch aufs Hochladen wartet (Kamera, Galerie) -->
+            <org.fossify.commons.views.MyTextView
+                android:id="@+id/nc_wartet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nc_orte"
+                android:paddingHorizontal="@dimen/activity_margin"
+                android:paddingVertical="@dimen/small_margin"
+                android:textSize="@dimen/normal_text_size"
+                android:visibility="gone" />
+
             <org.fossify.commons.views.MyRecyclerView
                 android:id="@+id/nc_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/nc_orte"
+                android:layout_below="@+id/nc_wartet"
                 android:clipToPadding="false"
                 android:paddingHorizontal="@dimen/small_margin"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"

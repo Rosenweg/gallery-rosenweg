@@ -10,7 +10,10 @@
     <string name="nc_loeschen_frage">„%s“ in den Papierkorb der Nextcloud verschieben?</string>
     <string name="nc_loeschen">In den Papierkorb</string>
     <string name="nc_bearbeiten">Bearbeiten</string>
+    <string name="nc_wartet">⏳ %d Fotos/Videos werden noch hochgeladen – tippen, um es jetzt zu versuchen</string>
+    <string name="nc_wartet_fehler">⚠ %d Fotos/Videos konnten nicht hochgeladen werden – tippen, um es nochmals zu versuchen</string>
     <string name="nc_mehr">Mehr</string>
+    <string name="nc_wird_geladen_kurz">Hochladen angestossen</string>
     <string name="nc_bearbeitet_gespeichert">Als „%s“ in der Nextcloud gespeichert</string>
     <string name="nc_bearbeitet_nicht_gespeichert">Nicht gespeichert</string>
     <string name="nc_im_browser">In der Nextcloud im Browser öffnen</string>
