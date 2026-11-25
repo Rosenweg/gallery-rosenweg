@@ -5,6 +5,8 @@ import android.content.Intent
 import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import java.io.File
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.FileProvider
@@ -174,6 +176,7 @@ class NextcloudGalerieActivity : SimpleActivity() {
     private fun aktionen(e: Eintrag) {
         val d = dav ?: return
         val punkte = mutableListOf<Pair<String, () -> Unit>>()
+        if (!e.istOrdner && endung(e) in BEARBEITBAR) punkte += getString(R.string.nc_bearbeiten) to { bearbeiten(e) }
         if (!e.istOrdner && e.fileId > 0) punkte += getString(R.string.nc_im_browser) to {
             try {
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(d.webAdresse(e))).addCategory(Intent.CATEGORY_BROWSABLE))
@@ -196,6 +199,79 @@ class NextcloudGalerieActivity : SimpleActivity() {
         if (punkte.isEmpty()) return
         getAlertDialogBuilder().setItems(punkte.map { it.first }.toTypedArray()) { _, i -> punkte[i].second() }
             .setTitle(e.name).show()
+    }
+
+    // ─── Bearbeiten (Stefan 25.11.2026): Editor der Galerie, Ergebnis als neue Datei daneben ───
+    private var bearbeitet: Pair<Eintrag, File>? = null
+
+    private fun bearbeiten(e: Eintrag) {
+        toast(getString(R.string.nc_wird_geladen, e.name))
+        ensureBackgroundThread {
+            try {
+                val quelle = Ablage.lokaleKopie(this, e.pfad)
+                val ordner = File(cacheDir, "nc-bearbeitet").apply { mkdirs() }
+                val ziel = File(ordner, bearbeitetName(e.name)).apply { delete(); createNewFile() }
+                val rein = FileProvider.getUriForFile(this, "$packageName.provider", quelle)
+                val raus = FileProvider.getUriForFile(this, "$packageName.provider", ziel)
+                runOnUiThread {
+                    bearbeitet = e to ziel
+                    val i = Intent(Intent.ACTION_EDIT).setClass(this, EditActivity::class.java)
+                        .setDataAndType(rein, "image/*")
+                        .putExtra(MediaStore.EXTRA_OUTPUT, raus)
+                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    @Suppress("DEPRECATION")
+                    startActivityForResult(i, BEARBEITEN)
+                }
+            } catch (ex: Exception) {
+                runOnUiThread { fehler(ex) }
+            }
+        }
+    }
+
+    @Deprecated("Activity-Result-API ist hier nicht noetig")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION")
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != BEARBEITEN) return
+        val (e, ziel) = bearbeitet ?: return
+        bearbeitet = null
+        // Der Editor meldet nicht immer RESULT_OK: massgebend ist, ob er etwas geschrieben hat
+        if (!ziel.exists() || ziel.length() == 0L) {
+            toast(R.string.nc_bearbeitet_nicht_gespeichert)
+            return
+        }
+        val d = dav ?: return
+        val ordnerPfad = e.pfad.substringBeforeLast('/', "")
+        ensureBackgroundThread {
+            try {
+                var name = ziel.name
+                var n = 2
+                while (true) {
+                    try {
+                        d.hochladen("$ordnerPfad/$name", { ziel.inputStream() }, ziel.length(),
+                            if (endung(e) == "png") "image/png" else "image/jpeg", nurNeu = true)
+                        break
+                    } catch (ex: NextcloudFehler) {
+                        // den Namen gibt es schon: nummerieren statt ueberschreiben
+                        if (ex.code != 412 || n > 20) throw ex
+                        name = bearbeitetName(e.name, n++)
+                    }
+                }
+                ziel.delete()
+                runOnUiThread {
+                    toast(getString(R.string.nc_bearbeitet_gespeichert, name))
+                    laden()
+                }
+            } catch (ex: Exception) {
+                runOnUiThread { fehler(ex) }
+            }
+        }
+    }
+
+    private fun bearbeitetName(name: String, nr: Int = 1): String {
+        val basis = name.substringBeforeLast('.')
+        val end = name.substringAfterLast('.', "jpg")
+        return if (nr == 1) "$basis (bearbeitet).$end" else "$basis (bearbeitet $nr).$end"
     }
 
     private fun fehler(e: Exception) {
@@ -250,6 +326,8 @@ class NextcloudGalerieActivity : SimpleActivity() {
                 }
                 root.setOnClickListener { oeffnen(e) }
                 root.setOnLongClickListener { aktionen(e); true }
+                ncMehr.beVisibleIf(!e.istOrdner)
+                ncMehr.setOnClickListener { aktionen(e) }
             }
         }
     }
@@ -259,5 +337,7 @@ class NextcloudGalerieActivity : SimpleActivity() {
         val START = "${Hochladen.PERSOENLICH}/Kamera"
         val FOTO = setOf("jpg", "jpeg", "png", "heic", "heif", "webp", "gif", "avif")
         val VIDEO = setOf("mp4", "3gp", "mkv", "webm", "mov")
+        val BEARBEITBAR = setOf("jpg", "jpeg", "png", "webp")
+        const val BEARBEITEN = 4711
     }
 }
