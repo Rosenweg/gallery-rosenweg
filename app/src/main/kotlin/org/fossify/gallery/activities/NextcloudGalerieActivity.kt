@@ -48,6 +48,7 @@ class NextcloudGalerieActivity : SimpleActivity() {
     private val binding by viewBinding(ActivityNextcloudGalerieBinding::inflate)
     private var dav: WebDav? = null
     private var pfad = START
+    private var nachAnsichtLaden = false
     private var eintraege = listOf<Eintrag>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,8 +78,7 @@ class NextcloudGalerieActivity : SimpleActivity() {
 
     override fun onResume() {
         super.onResume()
-        setupTopAppBar(binding.ncAppbar, NavigationIcon.Arrow)
-        binding.ncToolbar.setNavigationOnClickListener { if (!hoch()) finish() }
+        pfeil()
         binding.ncPlaceholder.setTextColor(getProperTextColor())
         binding.ncLogin.setTextColor(getProperPrimaryColor())
         binding.ncOrtIntern.alsOrtChip(aktiv = false, symbol = org.fossify.commons.R.drawable.ic_phone_vector)
@@ -91,7 +91,8 @@ class NextcloudGalerieActivity : SimpleActivity() {
         if (dav == null) {
             eintraege = emptyList()
             anzeigen()
-        } else if (vorher == null || eintraege.isEmpty()) {
+        } else if (vorher == null || eintraege.isEmpty() || nachAnsichtLaden) {
+            nachAnsichtLaden = false   // in der Fotoansicht geloescht/umbenannt? Liste frisch holen
             laden()
         }
     }
@@ -106,8 +107,23 @@ class NextcloudGalerieActivity : SimpleActivity() {
         if (!hoch()) super.onBackPressed()
     }
 
+    /**
+     * Mit Rosenweg Geraet ist diese Ansicht die Galerie selbst (Stefan 25.11.2026: "direkt Nextcloud
+     * mit einem Pfeil zurueck - da ist was schief"). Auf der Startseite also kein Pfeil, Zurueck
+     * schliesst; nur in Unterordnern geht es mit dem Pfeil eine Ebene hoch.
+     */
+    private fun alsStart() = ch.rosenweg4303.cloud.RosenwegAnmeldung.geraetDa(this)
+
+    private fun pfeil() {
+        val oben = alsStart() && pfad == START
+        setupTopAppBar(binding.ncAppbar, if (oben) NavigationIcon.None else NavigationIcon.Arrow)
+        if (oben) binding.ncToolbar.navigationIcon = null
+        binding.ncToolbar.setNavigationOnClickListener { if (!hoch()) finish() }
+    }
+
     private fun hoch(): Boolean {
         if (dav == null || pfad == Hochladen.PERSOENLICH) return false
+        if (alsStart() && pfad == START) return false
         pfad = if (pfad == START) Hochladen.PERSOENLICH else pfad.substringBeforeLast('/', Hochladen.PERSOENLICH)
         eintraege = emptyList()
         laden()
@@ -117,6 +133,7 @@ class NextcloudGalerieActivity : SimpleActivity() {
     private fun anzeigen() {
         val angemeldet = dav != null
         binding.apply {
+            pfeil()
             ncToolbar.title = if (pfad == START) getString(R.string.nc_titel) + " · Kamera" else pfad.substringAfterLast('/')
             ncRefresh.isEnabled = angemeldet
             ncLogin.beVisibleIf(!angemeldet)
@@ -175,7 +192,11 @@ class NextcloudGalerieActivity : SimpleActivity() {
                         startActivity(
                             Intent(this, ziel).setDataAndType(uri, if (video) "video/*" else "image/*")
                                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                .putExtra(org.fossify.gallery.rosenweg.NcDatei.PFAD, e.pfad)
+                                .putExtra(org.fossify.gallery.rosenweg.NcDatei.DARF_LOESCHEN, e.darfLoeschen)
+                                .putExtra(org.fossify.gallery.rosenweg.NcDatei.DARF_UMBENENNEN, e.darfUmbenennen)
                         )
+                        nachAnsichtLaden = true
                     } catch (ex: ActivityNotFoundException) {
                         toast(org.fossify.commons.R.string.no_app_found)
                     }
@@ -197,17 +218,11 @@ class NextcloudGalerieActivity : SimpleActivity() {
                 toast(org.fossify.commons.R.string.no_app_found)
             }
         }
+        if (!e.istOrdner && e.darfUmbenennen) punkte += getString(R.string.nc_umbenennen) to {
+            org.fossify.gallery.rosenweg.NcDatei.umbenennen(this, e.pfad) { laden() }
+        }
         if (e.darfLoeschen) punkte += getString(R.string.nc_loeschen) to {
-            ConfirmationDialog(this, getString(R.string.nc_loeschen_frage, e.name), positive = org.fossify.commons.R.string.yes, negative = org.fossify.commons.R.string.no) {
-                ensureBackgroundThread {
-                    try {
-                        d.loeschen(e.pfad)
-                        runOnUiThread { laden() }
-                    } catch (ex: Exception) {
-                        runOnUiThread { fehler(ex) }
-                    }
-                }
-            }
+            org.fossify.gallery.rosenweg.NcDatei.loeschen(this, e.pfad) { laden() }
         }
         if (punkte.isEmpty()) return
         getAlertDialogBuilder().setItems(punkte.map { it.first }.toTypedArray()) { _, i -> punkte[i].second() }
