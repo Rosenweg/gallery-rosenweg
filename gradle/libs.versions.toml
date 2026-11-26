@@ -17,7 +17,8 @@ exif = "1.0.1"
 #Room
 room = "2.8.5"
 #Fossify
-commons = "7.1.3"
+commons = "7.1.3-rosenweg.1"
+rosenwegCloud = "0.8.2"
 #Gradle4
 gradlePlugins-agp = "9.2.1"
 #Other
@@ -43,6 +44,7 @@ app-build-minimumSDK = "26"
 app-build-javaVersion = "VERSION_17"
 app-build-kotlinJVMTarget = "17"
 [libraries]
+rosenweg-cloud = { module = "ch.rosenweg4303:cloud", version.ref = "rosenwegCloud" }
 #AndroidX
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime", version.ref = "androidx-lifecycle" }
 androidx-media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3Exoplayer" }

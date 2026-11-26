@@ -26,11 +26,51 @@
             android:text="@string/switch_to_file_search"
             android:visibility="gone" />
 
+        <!-- Rosenweg: Ort waehlen - Fotos auf dem Telefon oder in der Nextcloud (Regel 6) -->
+        <LinearLayout
+            android:id="@+id/rw_orte"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/directories_switch_searching"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/activity_margin"
+            android:paddingTop="@dimen/small_margin"
+            android:paddingEnd="@dimen/activity_margin"
+            android:paddingBottom="@dimen/small_margin">
+
+                <org.fossify.commons.views.MyTextView
+                    android:id="@+id/rw_ort_telefon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:background="@drawable/breadcrumb_button_background"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/breadcrumbs_layout_height"
+                    android:paddingHorizontal="@dimen/normal_margin"
+                    android:paddingVertical="@dimen/medium_margin"
+                    android:text="@string/nc_telefon"
+                    android:textSize="@dimen/normal_text_size" />
+
+                <org.fossify.commons.views.MyTextView
+                    android:id="@+id/rw_ort_nextcloud"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:background="@drawable/breadcrumb_button_background"
+                    android:gravity="center_vertical"
+                    android:minHeight="@dimen/breadcrumbs_layout_height"
+                    android:paddingHorizontal="@dimen/normal_margin"
+                    android:paddingVertical="@dimen/medium_margin"
+                    android:text="@string/nc_titel"
+                    android:textSize="@dimen/normal_text_size" />
+        </LinearLayout>
+
         <org.fossify.commons.views.MyTextView
             android:id="@+id/directories_empty_placeholder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/directories_switch_searching"
+            android:layout_below="@+id/rw_orte"
             android:alpha="0.8"
             android:gravity="center_horizontal"
             android:paddingStart="@dimen/activity_margin"
@@ -57,7 +97,7 @@
             android:id="@+id/directories_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/directories_switch_searching">
+            android:layout_below="@+id/rw_orte">
 
             <com.qtalk.recyclerviewfastscroller.RecyclerViewFastScroller
                 android:id="@+id/directories_fastscroller"

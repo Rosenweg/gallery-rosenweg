@@ -78,6 +78,11 @@ import org.fossify.gallery.models.Medium
 import java.io.File
 
 open class PhotoVideoActivity : BaseViewerActivity(), ViewPagerFragment.FragmentListener {
+    private companion object {
+        const val NC_LOESCHEN = 0x52570001
+        const val NC_UMBENENNEN = 0x52570002
+    }
+
     private var mMedium: Medium? = null
     private var mIsFullScreen = false
     private var mIsFromGallery = false
@@ -164,6 +169,54 @@ open class PhotoVideoActivity : BaseViewerActivity(), ViewPagerFragment.Fragment
         binding.fragmentViewerToolbar.setNavigationOnClickListener {
             finish()
         }
+        ncAktionen()
+    }
+
+    /**
+     * Rosenweg: aus der Nextcloud-Ansicht geoeffnet - Umbenennen und Loeschen wirken auf die Datei
+     * in der Nextcloud (angezeigt wird nur eine lokale Kopie).
+     */
+    private fun ncAktionen() {
+        var ncPfad = intent.getStringExtra(org.fossify.gallery.rosenweg.NcDatei.PFAD) ?: return
+        val menu = binding.fragmentViewerToolbar.menu
+        if (intent.getBooleanExtra(org.fossify.gallery.rosenweg.NcDatei.DARF_UMBENENNEN, true)) {
+            menu.add(0, NC_UMBENENNEN, 100, R.string.nc_umbenennen)
+                .setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_NEVER)
+        }
+        if (intent.getBooleanExtra(org.fossify.gallery.rosenweg.NcDatei.DARF_LOESCHEN, true)) {
+            menu.add(0, NC_LOESCHEN, 101, R.string.nc_loeschen)
+                .setIcon(resources.getColoredDrawableWithColor(org.fossify.commons.R.drawable.ic_delete_vector, Color.WHITE))
+                .setShowAsAction(android.view.MenuItem.SHOW_AS_ACTION_ALWAYS)
+        }
+        binding.fragmentViewerToolbar.title = ncPfad.substringAfterLast('/')
+        val bisher = binding.fragmentViewerToolbar
+        bisher.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                NC_LOESCHEN -> { org.fossify.gallery.rosenweg.NcDatei.loeschen(this, ncPfad) { finish() }; true }
+                NC_UMBENENNEN -> {
+                    org.fossify.gallery.rosenweg.NcDatei.umbenennen(this, ncPfad) { neu ->
+                        ncPfad = neu
+                        binding.fragmentViewerToolbar.title = neu.substringAfterLast('/')
+                    }
+                    true
+                }
+                else -> ursprungsMenue(item)
+            }
+        }
+    }
+
+    private fun ursprungsMenue(menuItem: android.view.MenuItem): Boolean {
+        if (mMedium == null || mUri == null) return true
+        when (menuItem.itemId) {
+            R.id.menu_set_as -> setAs(mUri!!.toString())
+            R.id.menu_open_with -> openPath(mUri!!.toString(), true)
+            R.id.menu_share -> sharePath(mUri!!.toString())
+            R.id.menu_edit -> openEditor(mUri!!.toString())
+            R.id.menu_properties -> showProperties()
+            R.id.menu_show_on_map -> showFileOnMap(mUri!!.toString())
+            else -> return false
+        }
+        return true
     }
 
     private fun checkIntent(savedInstanceState: Bundle? = null) {

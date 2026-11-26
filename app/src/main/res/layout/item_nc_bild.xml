@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.fossify.gallery.views.QuadrantFrame xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="1dp"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/nc_bild"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/nc_typ"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        android:alpha="0.9" />
+
+    <!-- Rosenweg: sichtbarer Knopf fuer Bearbeiten/Loeschen (statt nur lange druecken) -->
+    <ImageView
+        android:id="@+id/nc_mehr"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="2dp"
+        android:background="@drawable/nc_mehr_hintergrund"
+        android:contentDescription="@string/nc_mehr"
+        android:padding="8dp"
+        android:src="@drawable/ic_three_dots_vector"
+        app:tint="#FFFFFFFF" />
+
+    <TextView
+        android:id="@+id/nc_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#66000000"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:padding="4dp"
+        android:textColor="#FFFFFFFF"
+        android:textSize="12sp" />
+</org.fossify.gallery.views.QuadrantFrame>

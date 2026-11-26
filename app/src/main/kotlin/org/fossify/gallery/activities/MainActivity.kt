@@ -1,5 +1,6 @@
 package org.fossify.gallery.activities
 
+import org.fossify.gallery.helpers.alsOrtChip
 import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
@@ -154,6 +155,8 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
     override var isSearchBarEnabled = true
     
     companion object {
+        /** Rosenweg: aus der Nextcloud-Ansicht "Telefon" gewaehlt - nicht wieder umleiten. */
+        const val ROSENWEG_TELEFON_ANSICHT = "rosenweg_telefon_ansicht"
         private const val PICK_MEDIA = 2
         private const val PICK_WALLPAPER = 3
         private const val LAST_MEDIA_CHECK_PERIOD = 3000L
@@ -230,6 +233,28 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
         setupOptionsMenu()
         refreshMenuItems()
 
+        // Rosenweg: Fotos aus der Nextcloud (Regel 6); nicht beim Auswaehlen fuer andere Apps
+        binding.rwOrte.beVisibleIf(!mIsThirdPartyIntent)
+        binding.rwOrtNextcloud.setOnClickListener {
+            startActivity(Intent(this, NextcloudGalerieActivity::class.java))
+        }
+        // Stefan 25.11.2026: mit Rosenweg Geraet nur die Nextcloud (lokal ist nur Zwischenspeicher);
+        // ohne Geraet startet die Nextcloud-Ansicht, wenn ein Zugang da ist - "Telefon" fuehrt zurueck.
+        if (savedInstanceState == null && !mIsThirdPartyIntent && !intent.getBooleanExtra(ROSENWEG_TELEFON_ANSICHT, false)) {
+            val geraet = ch.rosenweg4303.cloud.RosenwegAnmeldung.geraetDa(this)
+            if (geraet || ch.rosenweg4303.cloud.Ablage.webDav(this) != null) {
+                startActivity(Intent(this, NextcloudGalerieActivity::class.java))
+                if (geraet) {
+                    finish()
+                    return
+                }
+            }
+        }
+        if (savedInstanceState == null && !mIsThirdPartyIntent) {
+            ch.rosenweg4303.cloud.Hinweis.beimErstenStart(this, "Deine Fotos und Videos aus der Nextcloud")
+            ch.rosenweg4303.cloud.Einstellungen.abgleichen(this) { recreate() }
+        }
+
         setupEdgeToEdge(
             padBottomImeAndSystem = listOf(binding.directoriesGrid)
         )
@@ -291,6 +316,8 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
     override fun onResume() {
         super.onResume()
         updateMenuColors()
+        binding.rwOrtTelefon.alsOrtChip(aktiv = true, symbol = org.fossify.commons.R.drawable.ic_phone_vector)
+        binding.rwOrtNextcloud.alsOrtChip(aktiv = false)
         config.isThirdPartyIntent = false
         mDateFormat = config.dateFormat
         mTimeFormat = getTimeFormat()
@@ -842,7 +869,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
         }
 
         (binding.directoriesRefreshLayout.layoutParams as RelativeLayout.LayoutParams)
-            .addRule(RelativeLayout.BELOW, R.id.directories_switch_searching)
+            .addRule(RelativeLayout.BELOW, R.id.rw_orte) // Rosenweg: unter den Chips Telefon/Nextcloud
     }
 
     private fun setupGridLayoutManager() {
