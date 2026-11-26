@@ -102,10 +102,9 @@ class NextcloudGalerieActivity : SimpleActivity() {
         outState.putString(PFAD, pfad)
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (!hoch()) super.onBackPressed()
-    }
+    // Zurueck (Taste und Wischgeste) laeuft ueber den OnBackPressedDispatcher von BaseSimpleActivity;
+    // onBackPressed() wird bei der Zurueck-Geste nicht mehr aufgerufen.
+    override fun onBackPressedCompat(): Boolean = hoch()
 
     /**
      * Mit Rosenweg Geraet ist diese Ansicht die Galerie selbst (Stefan 25.11.2026: "direkt Nextcloud
