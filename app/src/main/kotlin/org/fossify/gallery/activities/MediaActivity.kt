@@ -198,6 +198,11 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
 
     override fun onResume() {
         super.onResume()
+        // Rosenweg: ueber Widget oder Ordner-Verknuepfung geoeffnet - wie MainActivity erst anmelden
+        // (eigenes Handy); nicht beim Auswaehlen fuer andere Apps
+        if (!mIsGetImageIntent && !mIsGetVideoIntent && !mIsGetAnyIntent &&
+            ch.rosenweg4303.cloud.RosenwegAnmeldeSchirm.zeigenFallsNoetig(this)
+        ) return
         updateMenuColors()
         if (mStoredAnimateGifs != config.animateGifs) {
             getMediaAdapter()?.updateAnimateGifs(config.animateGifs)

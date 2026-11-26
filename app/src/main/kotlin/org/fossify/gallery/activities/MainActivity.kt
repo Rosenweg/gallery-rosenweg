@@ -295,8 +295,18 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
         }
 
         // just request the permission, tryLoadGallery will then trigger in onResume
-        handleMediaPermissions()
+        // Rosenweg: ohne Anmeldung erst nach dem Anmeldeschirm fragen (onResume)
+        if (!rosenwegAnmeldungNoetig()) handleMediaPermissions()
     }
+
+    /**
+     * Rosenweg (Stefan 26.11.2026): auf dem eigenen Handy ist die App ohne Anmeldung nicht nutzbar,
+     * es kommt der gemeinsame Anmeldeschirm (commons-rosenweg: Karte oder Rosenweg-Konto, "Zurueck"
+     * schliesst die App). Geteilte Telefone (Rosenweg Geraet): nie, dort gilt dessen Anmeldung.
+     * Nicht beim Auswaehlen fuer andere Apps (Foto auswaehlen, Hintergrund) - das geht ohne Nextcloud.
+     */
+    private fun rosenwegAnmeldungNoetig() =
+        !mIsThirdPartyIntent && ch.rosenweg4303.cloud.RosenwegAnmeldung.anmeldungNoetig(this)
 
     private fun handleMediaPermissions(callback: (() -> Unit)? = null) {
         requestMediaPermissions(enableRationale = true) {
@@ -315,6 +325,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
 
     override fun onResume() {
         super.onResume()
+        if (rosenwegAnmeldungNoetig() && ch.rosenweg4303.cloud.RosenwegAnmeldeSchirm.zeigenFallsNoetig(this)) return
         updateMenuColors()
         binding.rwOrtTelefon.alsOrtChip(aktiv = true, symbol = org.fossify.commons.R.drawable.ic_phone_vector)
         binding.rwOrtNextcloud.alsOrtChip(aktiv = false)
