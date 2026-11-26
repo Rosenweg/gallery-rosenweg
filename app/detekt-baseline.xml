@@ -7,6 +7,7 @@
     <ID>ComplexCondition:DirectoryAdapter.kt$DirectoryAdapter$!config.useRecycleBin || config.tempSkipRecycleBin || (isOneItemSelected() &amp;&amp; fileDirItem.areFavorites())</ID>
     <ID>ComplexCondition:MainActivity.kt$MainActivity$!config.wasOTGHandled &amp;&amp; hasPermission(getPermissionToRequest()) &amp;&amp; hasOTGConnected() &amp;&amp; config.OTGPath.isEmpty()</ID>
     <ID>ComplexCondition:MainActivity.kt$MainActivity$(!defaultDir.exists() || !defaultDir.isDirectory) &amp;&amp; (config.defaultFolder != RECYCLE_BIN &amp;&amp; config.defaultFolder != FAVORITES)</ID>
+    <ID>ComplexCondition:MediaActivity.kt$MediaActivity$!mIsGetImageIntent &amp;&amp; !mIsGetVideoIntent &amp;&amp; !mIsGetAnyIntent &amp;&amp; ch.rosenweg4303.cloud.RosenwegAnmeldeSchirm.zeigenFallsNoetig(this, nextcloud = true)</ID>
     <ID>ComplexCondition:MediaActivity.kt$MediaActivity$mMedia.isEmpty() || !isRandomSorting || (isRandomSorting &amp;&amp; !mWasFullscreenViewOpen)</ID>
     <ID>ComplexCondition:MediaAdapter.kt$MediaAdapter$showFileTypes &amp;&amp; (medium.isGIF() || medium.isRaw() || medium.isSVG())</ID>
     <ID>ComplexCondition:MediaFetcher.kt$MediaFetcher$!isImage &amp;&amp; !isVideo &amp;&amp; !isGif &amp;&amp; !isRaw &amp;&amp; !isSvg</ID>
@@ -308,6 +309,7 @@
     <ID>MaxLineLength:MainActivity.kt$MainActivity$// update directories and media files in the local db, delete invalid items. Intentionally creating a new thread</ID>
     <ID>MaxLineLength:MainActivity.kt$MainActivity$// we are looping through the already displayed folders looking for changes, do not do anything if nothing changed</ID>
     <ID>MaxLineLength:MainActivity.kt$MainActivity$if</ID>
+    <ID>MaxLineLength:MainActivity.kt$MainActivity$if (rosenwegAnmeldungNoetig() &amp;&amp; ch.rosenweg4303.cloud.RosenwegAnmeldeSchirm.zeigenFallsNoetig(this, nextcloud = true)) return</ID>
     <ID>MaxLineLength:ManageFoldersAdapter.kt$ManageFoldersAdapter$activity: BaseSimpleActivity</ID>
     <ID>MaxLineLength:MediaAdapter.kt$MediaAdapter$findItem(R.id.cab_confirm_selection).isVisible = isAGetIntent &amp;&amp; allowMultiplePicks &amp;&amp; selectedKeys.isNotEmpty()</ID>
     <ID>MaxLineLength:MediaAdapter.kt$MediaAdapter$findItem(R.id.cab_restore_recycle_bin_files).isVisible = selectedPaths.all { it.startsWith(activity.recycleBinPath) }</ID>
