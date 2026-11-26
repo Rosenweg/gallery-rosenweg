@@ -37,6 +37,7 @@
     <ID>CyclomaticComplexMethod:EditActivity.kt$EditActivity$private fun initEditActivity()</ID>
     <ID>CyclomaticComplexMethod:EditActivity.kt$EditActivity$private fun updatePrimaryActionButtons()</ID>
     <ID>CyclomaticComplexMethod:MainActivity.kt$MainActivity$override fun deleteFolders(folders: ArrayList&lt;File&gt;)</ID>
+    <ID>CyclomaticComplexMethod:MainActivity.kt$MainActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
     <ID>CyclomaticComplexMethod:MainActivity.kt$MainActivity$private fun checkInvalidDirectories(dirs: ArrayList&lt;Directory&gt;)</ID>
     <ID>CyclomaticComplexMethod:MainActivity.kt$MainActivity$private fun gotDirectories(newDirs: ArrayList&lt;Directory&gt;)</ID>
     <ID>CyclomaticComplexMethod:MainActivity.kt$MainActivity$private fun setupOptionsMenu()</ID>
@@ -69,6 +70,7 @@
     <ID>EmptyCatchBlock:MediaActivity.kt$MediaActivity${ }</ID>
     <ID>EmptyCatchBlock:MediaFetcher.kt$MediaFetcher${ }</ID>
     <ID>EmptyCatchBlock:MyWidgetProvider.kt$MyWidgetProvider${ }</ID>
+    <ID>EmptyCatchBlock:NextcloudGalerieActivity.kt$NextcloudGalerieActivity${ }</ID>
     <ID>EmptyCatchBlock:PhotoVideoActivity.kt$PhotoVideoActivity${ }</ID>
     <ID>EmptyCatchBlock:ViewPagerActivity.kt$ViewPagerActivity${ }</ID>
     <ID>EmptyFunctionBlock:App.kt$App.&lt;no name provided&gt;${}</ID>
@@ -166,6 +168,12 @@
     <ID>MagicNumber:MediaSideScroll.kt$MediaSideScroll$255f</ID>
     <ID>MagicNumber:MediaSideScroll.kt$MediaSideScroll$3</ID>
     <ID>MagicNumber:MediaSideScroll.kt$MediaSideScroll$70</ID>
+    <ID>MagicNumber:NcDatei.kt$NcDatei$20</ID>
+    <ID>MagicNumber:NextcloudGalerieActivity.kt$NextcloudGalerieActivity$10_000</ID>
+    <ID>MagicNumber:NextcloudGalerieActivity.kt$NextcloudGalerieActivity$20</ID>
+    <ID>MagicNumber:NextcloudGalerieActivity.kt$NextcloudGalerieActivity$412</ID>
+    <ID>MagicNumber:NextcloudGalerieActivity.kt$NextcloudGalerieActivity.&lt;no name provided&gt;$10_000</ID>
+    <ID>MagicNumber:NextcloudGalerieActivity.kt$NextcloudGalerieActivity.Kacheln$384</ID>
     <ID>MagicNumber:OtherAspectRatioDialog.kt$OtherAspectRatioDialog$16f</ID>
     <ID>MagicNumber:OtherAspectRatioDialog.kt$OtherAspectRatioDialog$19f</ID>
     <ID>MagicNumber:OtherAspectRatioDialog.kt$OtherAspectRatioDialog$3f</ID>
@@ -188,6 +196,8 @@
     <ID>MagicNumber:PhotoFragment.kt$PhotoFragment.&lt;no name provided&gt;$270</ID>
     <ID>MagicNumber:PhotoFragment.kt$PhotoFragment.&lt;no name provided&gt;$360</ID>
     <ID>MagicNumber:PhotoFragment.kt$PhotoFragment.&lt;no name provided&gt;$90</ID>
+    <ID>MagicNumber:PhotoVideoActivity.kt$PhotoVideoActivity$100</ID>
+    <ID>MagicNumber:PhotoVideoActivity.kt$PhotoVideoActivity$101</ID>
     <ID>MagicNumber:PlaybackSpeedFragment.kt$PlaybackSpeedFragment$0.05f</ID>
     <ID>MagicNumber:PlaybackSpeedFragment.kt$PlaybackSpeedFragment$0.25f</ID>
     <ID>MagicNumber:PlaybackSpeedFragment.kt$PlaybackSpeedFragment$100</ID>
@@ -345,7 +355,15 @@
     <ID>MaxLineLength:MyPagerAdapter.kt$MyPagerAdapter$class</ID>
     <ID>MaxLineLength:MyWidgetProvider.kt$MyWidgetProvider$override</ID>
     <ID>MaxLineLength:MyWidgetProvider.kt$MyWidgetProvider$val pendingIntent = PendingIntent.getActivity(context, widget.widgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)</ID>
+    <ID>MaxLineLength:NcDatei.kt$NcDatei$a.runOnUiThread { a.toast(a.getString(R.string.nc_fehler, e.message ?: e.javaClass.simpleName)) }</ID>
+    <ID>MaxLineLength:NcDatei.kt$NcDatei$d.verschieben(pfad, ziel)</ID>
+    <ID>MaxLineLength:NcDatei.kt$NcDatei$val d = Ablage.webDav(a) ?: throw IllegalStateException(a.getString(R.string.nc_nicht_angemeldet))</ID>
     <ID>MaxLineLength:NewPhotoFetcher.kt$NewPhotoFetcher$if</ID>
+    <ID>MaxLineLength:NextcloudGalerieActivity.kt$NextcloudGalerieActivity$.</ID>
+    <ID>MaxLineLength:NextcloudGalerieActivity.kt$NextcloudGalerieActivity$ncLogin.setOnClickListener { startActivity(Intent(this@NextcloudGalerieActivity, AnmeldenActivity::class.java)) }</ID>
+    <ID>MaxLineLength:NextcloudGalerieActivity.kt$NextcloudGalerieActivity$ncToolbar.title = if (pfad == START) getString(R.string.nc_titel) + " · Kamera" else pfad.substringAfterLast('/')</ID>
+    <ID>MaxLineLength:NextcloudGalerieActivity.kt$NextcloudGalerieActivity$startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(d.webAdresse(e))).addCategory(Intent.CATEGORY_BROWSABLE))</ID>
+    <ID>MaxLineLength:NextcloudGalerieActivity.kt$NextcloudGalerieActivity$try { contentResolver.call(Uri.parse("content://$paket.rosenweg.hochladen"), "anstossen", null, null) } catch (e: Exception) { }</ID>
     <ID>MaxLineLength:PhotoFragment.kt$PhotoFragment$if</ID>
     <ID>MaxLineLength:PhotoFragment.kt$PhotoFragment$orient = exif2.getTag(ExifInterface.TAG_ORIENTATION)?.getValueAsInt(defaultOrientation) ?: defaultOrientation</ID>
     <ID>MaxLineLength:PhotoFragment.kt$PhotoFragment$resources.getDimension(R.dimen.portrait_photos_stripe_height).toInt()</ID>
@@ -356,6 +374,7 @@
     <ID>MaxLineLength:PhotoFragment.kt$PhotoFragment.&lt;no name provided&gt;$setTextColor(if (context.config.blackBackground) Color.WHITE else context.getProperTextColor())</ID>
     <ID>MaxLineLength:PhotoFragment.kt$PhotoFragment.&lt;no name provided&gt;$val useHeight = if (mImageOrientation == ORIENTATION_ROTATE_90 || mImageOrientation == ORIENTATION_ROTATE_270) sWidth else sHeight</ID>
     <ID>MaxLineLength:PhotoFragment.kt$PhotoFragment.&lt;no name provided&gt;$val useWidth = if (mImageOrientation == ORIENTATION_ROTATE_90 || mImageOrientation == ORIENTATION_ROTATE_270) sHeight else sWidth</ID>
+    <ID>MaxLineLength:PhotoVideoActivity.kt$PhotoVideoActivity$.</ID>
     <ID>MaxLineLength:PhotoVideoActivity.kt$PhotoVideoActivity$binding.bottomActions.bottomEdit.beVisibleIf(visibleBottomActions and BOTTOM_ACTION_EDIT != 0 &amp;&amp; mMedium?.isImage() == true)</ID>
     <ID>MaxLineLength:PhotoVideoActivity.kt$PhotoVideoActivity$binding.bottomActions.bottomSetAs.beVisibleIf(visibleBottomActions and BOTTOM_ACTION_SET_AS != 0 &amp;&amp; mMedium?.isImage() == true)</ID>
     <ID>MaxLineLength:PhotoVideoActivity.kt$PhotoVideoActivity$binding.fragmentViewerToolbar.title = Html.fromHtml("&lt;font color='${Color.WHITE.toHex()}'&gt;${mMedium!!.name}&lt;/font&gt;")</ID>
@@ -379,9 +398,12 @@
     <ID>MaxLineLength:PickMediumDialog.kt$PickMediumDialog$val newGridDecoration = GridSpacingItemDecoration(spanCount, spacing, config.scrollHorizontally, config.fileRoundedCorners, media, useGridPosition)</ID>
     <ID>MaxLineLength:PlaybackSpeedFragment.kt$PlaybackSpeedFragment$val background = ResourcesCompat.getDrawable(resources, org.fossify.commons.R.drawable.bottom_sheet_bg, requireContext().theme)</ID>
     <ID>MaxLineLength:PortraitPhotosAdapter.kt$PortraitPhotosAdapter$class</ID>
+    <ID>MaxLineLength:QuadrantFrame.kt$QuadrantFrame$class</ID>
+    <ID>MaxLineLength:QuadrantFrame.kt$QuadrantFrame$override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int)</ID>
     <ID>MaxLineLength:ResizeMultipleImagesDialog.kt$ResizeMultipleImagesDialog$toast(resources.getQuantityString(R.plurals.failed_to_resize_images, failureCount, failureCount))</ID>
     <ID>MaxLineLength:ResizeWithPathDialog.kt$ResizeWithPathDialog$class</ID>
     <ID>MaxLineLength:ResizeWithPathDialog.kt$ResizeWithPathDialog$val title = String.format(activity.getString(org.fossify.commons.R.string.file_already_exists_overwrite), newFilename)</ID>
+    <ID>MaxLineLength:RosenwegOrtChip.kt$setStroke(context.resources.getDimensionPixelSize(org.fossify.commons.R.dimen.one_dp), primaer.adjustAlpha(MEDIUM_ALPHA))</ID>
     <ID>MaxLineLength:SearchActivity.kt$SearchActivity$binding.searchGrid.layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)</ID>
     <ID>MaxLineLength:SearchActivity.kt$SearchActivity$binding.searchGrid.layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)</ID>
     <ID>MaxLineLength:SearchActivity.kt$SearchActivity$val decoration = GridSpacingItemDecoration(spanCount, spacing, config.scrollHorizontally, config.fileRoundedCorners, media, true)</ID>
@@ -456,6 +478,7 @@
     <ID>NestedBlockDepth:MediaFetcher.kt$MediaFetcher$private fun getMediaInFolder( folder: String, isPickImage: Boolean, isPickVideo: Boolean, filterMedia: Int, getProperDateTaken: Boolean, getProperLastModified: Boolean, getProperFileSize: Boolean, favoritePaths: ArrayList&lt;String&gt;, getVideoDurations: Boolean, lastModifieds: HashMap&lt;String, Long&gt;, dateTakens: HashMap&lt;String, Long&gt; ): ArrayList&lt;Medium&gt;</ID>
     <ID>NestedBlockDepth:MediaFetcher.kt$MediaFetcher$private fun parseCursor(cursor: Cursor): LinkedHashSet&lt;String&gt;</ID>
     <ID>NestedBlockDepth:MediaSideScroll.kt$MediaSideScroll$override fun onTouchEvent(event: MotionEvent): Boolean</ID>
+    <ID>NestedBlockDepth:NextcloudGalerieActivity.kt$NextcloudGalerieActivity.Kacheln$override fun onBindViewHolder(h: Kachel, position: Int)</ID>
     <ID>NestedBlockDepth:PhotoFragment.kt$PhotoFragment$override fun fullscreenToggled(isFullscreen: Boolean)</ID>
     <ID>NestedBlockDepth:PhotoVideoActivity.kt$PhotoVideoActivity$private fun checkIntent(savedInstanceState: Bundle? = null)</ID>
     <ID>NestedBlockDepth:SettingsActivity.kt$SettingsActivity$private fun parseFile(inputStream: InputStream?)</ID>
@@ -477,6 +500,8 @@
     <ID>SwallowedException:MediaFetcher.kt$MediaFetcher$e: Exception</ID>
     <ID>SwallowedException:MediaSideScroll.kt$MediaSideScroll$e: Settings.SettingNotFoundException</ID>
     <ID>SwallowedException:MyWidgetProvider.kt$MyWidgetProvider$e: Exception</ID>
+    <ID>SwallowedException:NextcloudGalerieActivity.kt$NextcloudGalerieActivity$e: Exception</ID>
+    <ID>SwallowedException:NextcloudGalerieActivity.kt$NextcloudGalerieActivity$ex: ActivityNotFoundException</ID>
     <ID>SwallowedException:PhotoFragment.kt$PhotoFragment$e: Exception</ID>
     <ID>SwallowedException:PhotoFragment.kt$PhotoFragment$e: OutOfMemoryError</ID>
     <ID>SwallowedException:PhotoVideoActivity.kt$PhotoVideoActivity$e: Exception</ID>
@@ -495,6 +520,9 @@
     <ID>TooGenericExceptionCaught:MediaActivity.kt$MediaActivity$e: Exception</ID>
     <ID>TooGenericExceptionCaught:MediaFetcher.kt$MediaFetcher$e: Exception</ID>
     <ID>TooGenericExceptionCaught:MyWidgetProvider.kt$MyWidgetProvider$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:NcDatei.kt$NcDatei$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:NextcloudGalerieActivity.kt$NextcloudGalerieActivity$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:NextcloudGalerieActivity.kt$NextcloudGalerieActivity$ex: Exception</ID>
     <ID>TooGenericExceptionCaught:PhotoFragment.kt$PhotoFragment$e: Exception</ID>
     <ID>TooGenericExceptionCaught:PhotoVideoActivity.kt$PhotoVideoActivity$e: Exception</ID>
     <ID>TooGenericExceptionCaught:ResizeMultipleImagesDialog.kt$ResizeMultipleImagesDialog$e: Exception</ID>
@@ -519,6 +547,7 @@
     <ID>TooManyFunctions:MediaFetcher.kt$MediaFetcher</ID>
     <ID>TooManyFunctions:Medium.kt$Medium : SerializableThumbnailItem</ID>
     <ID>TooManyFunctions:MediumDao.kt$MediumDao</ID>
+    <ID>TooManyFunctions:NextcloudGalerieActivity.kt$NextcloudGalerieActivity : SimpleActivity</ID>
     <ID>TooManyFunctions:PhotoFragment.kt$PhotoFragment : ViewPagerFragment</ID>
     <ID>TooManyFunctions:PhotoVideoActivity.kt$PhotoVideoActivity : BaseViewerActivityFragmentListener</ID>
     <ID>TooManyFunctions:SearchActivity.kt$SearchActivity : SimpleActivityMediaOperationsListener</ID>
