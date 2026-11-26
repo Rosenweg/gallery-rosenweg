@@ -201,7 +201,7 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
         // Rosenweg: ueber Widget oder Ordner-Verknuepfung geoeffnet - wie MainActivity erst anmelden
         // (eigenes Handy); nicht beim Auswaehlen fuer andere Apps
         if (!mIsGetImageIntent && !mIsGetVideoIntent && !mIsGetAnyIntent &&
-            ch.rosenweg4303.cloud.RosenwegAnmeldeSchirm.zeigenFallsNoetig(this)
+            ch.rosenweg4303.cloud.RosenwegAnmeldeSchirm.zeigenFallsNoetig(this, nextcloud = true)
         ) return
         updateMenuColors()
         if (mStoredAnimateGifs != config.animateGifs) {

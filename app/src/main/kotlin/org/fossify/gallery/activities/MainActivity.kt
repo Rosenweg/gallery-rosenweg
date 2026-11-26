@@ -325,7 +325,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
 
     override fun onResume() {
         super.onResume()
-        if (rosenwegAnmeldungNoetig() && ch.rosenweg4303.cloud.RosenwegAnmeldeSchirm.zeigenFallsNoetig(this)) return
+        if (rosenwegAnmeldungNoetig() && ch.rosenweg4303.cloud.RosenwegAnmeldeSchirm.zeigenFallsNoetig(this, nextcloud = true)) return
         updateMenuColors()
         binding.rwOrtTelefon.alsOrtChip(aktiv = true, symbol = org.fossify.commons.R.drawable.ic_phone_vector)
         binding.rwOrtNextcloud.alsOrtChip(aktiv = false)
