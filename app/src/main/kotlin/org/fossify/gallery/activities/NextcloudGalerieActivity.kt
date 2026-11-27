@@ -97,13 +97,21 @@ class NextcloudGalerieActivity : SimpleActivity() {
         }
     }
 
-    /** Normal: Einstellungen, Über. Mehrfachauswahl: "Fertig" (erst sichtbar, wenn etwas gewaehlt ist). */
+    /**
+     * Normal: Einstellungen, Über. Geteilte Telefone (Rosenweg Geraet, Stefan 27.11.2026): keine
+     * Einstellungen, nur "Nach Updates suchen" (die Seite des Updaters sagt dort, dass Geraet
+     * aktualisiert) und Über. Mehrfachauswahl: "Fertig" (erst sichtbar, wenn etwas gewaehlt ist). */
     private fun menueAufbauen() {
         binding.ncToolbar.menu.apply {
             clear()
             if (auswahl == null) {
-                add(0, MENUE_EINSTELLUNGEN, 0, org.fossify.commons.R.string.settings)
-                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER)
+                if (RosenwegAnmeldung.geraetDa(this@NextcloudGalerieActivity)) {
+                    add(0, MENUE_UPDATES, 0, ch.rosenweg4303.updater.R.string.rosenweg_nach_updates_suchen)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER)
+                } else {
+                    add(0, MENUE_EINSTELLUNGEN, 0, org.fossify.commons.R.string.settings)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER)
+                }
                 add(0, MENUE_UEBER, 1, org.fossify.commons.R.string.about)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER)
             } else if (auswahl?.mehrere == true) {
@@ -115,6 +123,7 @@ class NextcloudGalerieActivity : SimpleActivity() {
         binding.ncToolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 MENUE_EINSTELLUNGEN -> launchSettings()
+                MENUE_UPDATES -> ch.rosenweg4303.updater.RosenwegUpdater.jetztPruefen(this)
                 MENUE_UEBER -> launchAbout()
                 MENUE_FERTIG -> if (gewaehlt.isNotEmpty()) zurueckgeben(gewaehlt.toList())
                 else -> return@setOnMenuItemClickListener false
@@ -626,5 +635,6 @@ class NextcloudGalerieActivity : SimpleActivity() {
         const val MENUE_EINSTELLUNGEN = 1
         const val MENUE_UEBER = 2
         const val MENUE_FERTIG = 3
+        const val MENUE_UPDATES = 4
     }
 }

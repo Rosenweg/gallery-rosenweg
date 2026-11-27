@@ -113,6 +113,7 @@ class SettingsActivity : SimpleActivity() {
         setupImportFavorites()
         setupExportSettings()
         setupImportSettings()
+        nurNextcloudRelevantes()
 
         arrayOf(
             binding.settingsColorCustomizationSectionLabel,
@@ -131,6 +132,56 @@ class SettingsActivity : SimpleActivity() {
         ).forEach {
             it.setTextColor(getProperPrimaryColor())
         }
+    }
+
+    /**
+     * Rosenweg (Stefan 27.11.2026): die Galerie zeigt nur die Nextcloud. Was nur die lokale
+     * Ordneransicht, lokale Dateioperationen oder den lokalen Papierkorb betrifft, ist ausgeblendet.
+     * Es bleiben Farben, Sprache, Datumsformat, Bildbetrachter/Videos, Details, untere Aktionen,
+     * App-Passwort, Cache leeren sowie Einstellungen exportieren/importieren.
+     */
+    private fun nurNextcloudRelevantes() = binding.apply {
+        arrayOf(
+            // Allgemein: lokale Ordner und Mediensuche
+            settingsFileLoadingPriorityHolder,
+            settingsManageIncludedFoldersHolder,
+            settingsManageExcludedFoldersHolder,
+            settingsManageHiddenFoldersHolder,
+            settingsShowHiddenItemsHolder,
+            settingsSearchAllFilesHolder,
+            // Vorschaubilder der Ordneransicht
+            settingsThumbnailsLabel,
+            settingsCropThumbnailsHolder,
+            settingsAnimateGifsHolder,
+            settingsFileThumbnailStyleHolder,
+            settingsFolderThumbnailStyleHolder,
+            settingsThumbnailsDivider,
+            // Blaettern in der Ordneransicht
+            settingsScrollingLabel,
+            settingsScrollHorizontallyHolder,
+            settingsEnablePullToRefreshHolder,
+            settingsScrollingDivider,
+            // Sicherheit: versteckte/ausgeschlossene Ordner, lokales Loeschen
+            settingsHiddenItemPasswordProtectionHolder,
+            settingsExcludedItemPasswordProtectionHolder,
+            settingsFileDeletionPasswordProtectionHolder,
+            // Lokale Dateioperationen (Loeschen in der Nextcloud fragt immer nach)
+            settingsFileOperationsLabel,
+            settingsDeleteEmptyFoldersHolder,
+            settingsKeepLastModifiedHolder,
+            settingsSkipDeleteConfirmationHolder,
+            settingsFileOperationsDivider,
+            // Lokaler Papierkorb (die Nextcloud hat ihren eigenen)
+            settingsRecycleBinLabel,
+            settingsUseRecycleBinHolder,
+            settingsShowRecycleBinHolder,
+            settingsShowRecycleBinLastHolder,
+            settingsEmptyRecycleBinHolder,
+            settingsRecycleBinDivider,
+            // Favoriten gibt es nur lokal
+            settingsExportFavoritesHolder,
+            settingsImportFavoritesHolder,
+        ).forEach { it.beGone() }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
