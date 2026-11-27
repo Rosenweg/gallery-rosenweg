@@ -28,9 +28,10 @@
          seine taegliche Pruefung mit WorkManager und Netz-Bedingung; ab Android 14 verlangt
          JobScheduler dafuer dieses Recht (sonst SecurityException, keine Pruefung) -->
 
-    <uses-permission
-        android:name="android.permission.CAMERA"
-        tools:node="remove" />
+    <!-- Rosenweg: CAMERA NICHT entfernen (Fossify tat es) - der gemeinsame Anmeldeschirm aus
+         commons-rosenweg (cloud ab 0.12.0) bietet "QR-Code scannen" an; ohne das Recht im
+         Manifest wird die Abfrage beim Tippen sofort abgelehnt. Gefragt wird erst beim Tippen,
+         die Galerie selbst nutzt die Kamera nicht. -->
 
     <queries>
         <package android:name="org.fossify.gallery.debug" />
