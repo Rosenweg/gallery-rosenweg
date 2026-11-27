@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="nc_titel">Nextcloud</string>
-    <string name="nc_telefon">Telefon</string>
+    <string name="nc_ort_kamera">Kamera</string>
+    <string name="nc_ort_ordner">Ordner</string>
     <string name="nc_anmelden">Bei der Rosenweg-Nextcloud anmelden</string>
-    <string name="nc_nicht_angemeldet">Melde dich an, um deine Fotos aus der Nextcloud zu sehen (Persönlich/Kamera und dein ganzer persönlicher Ordner).</string>
-    <string name="nc_leer">Hier sind keine Fotos oder Videos.</string>
+    <string name="nc_nicht_angemeldet">Die Galerie zeigt deine Fotos und Videos aus der Rosenweg-Nextcloud. Verbinde sie dafür einmal mit deinem Konto.</string>
+    <string name="nc_leer">In diesem Ordner sind keine Fotos oder Videos.</string>
+    <string name="nc_leer_kamera">Noch keine Fotos in deiner Nextcloud.\n\nFotos und Videos der Rosenweg Kamera landen automatisch hier. Unter „Ordner“ findest du alles andere aus deinem persönlichen Ordner.</string>
+    <string name="nc_leer_kamera_auswahl">Noch keine passenden Fotos oder Videos von der Rosenweg Kamera. Unter „Ordner“ findest du alles andere aus deinem persönlichen Ordner.</string>
+    <string name="nc_auswahl_foto">Foto auswählen</string>
+    <string name="nc_auswahl_fotos">Fotos auswählen</string>
+    <string name="nc_auswahl_video">Video auswählen</string>
+    <string name="nc_auswahl_beides">Foto oder Video auswählen</string>
+    <string name="nc_auswahl_fertig">Fertig</string>
+    <string name="nc_auswahl_fertig_anzahl">Fertig (%d)</string>
+    <string name="nc_auswahl_laedt">%d Dateien werden geladen …</string>
     <string name="nc_wird_geladen">%s wird geladen …</string>
     <string name="nc_fehler">Nextcloud: %s</string>
     <string name="nc_loeschen_frage">„%s“ in den Papierkorb der Nextcloud verschieben?</string>

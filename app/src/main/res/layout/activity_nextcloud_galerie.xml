@@ -44,7 +44,7 @@
                 android:paddingBottom="@dimen/small_margin">
 
                 <org.fossify.commons.views.MyTextView
-                    android:id="@+id/nc_ort_intern"
+                    android:id="@+id/nc_ort_kamera"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/small_margin"
@@ -53,11 +53,11 @@
                     android:minHeight="@dimen/breadcrumbs_layout_height"
                     android:paddingHorizontal="@dimen/normal_margin"
                     android:paddingVertical="@dimen/medium_margin"
-                    android:text="@string/nc_telefon"
+                    android:text="@string/nc_ort_kamera"
                     android:textSize="@dimen/normal_text_size" />
 
                 <org.fossify.commons.views.MyTextView
-                    android:id="@+id/nc_ort_nextcloud"
+                    android:id="@+id/nc_ort_ordner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/small_margin"
@@ -66,7 +66,7 @@
                     android:minHeight="@dimen/breadcrumbs_layout_height"
                     android:paddingHorizontal="@dimen/normal_margin"
                     android:paddingVertical="@dimen/medium_margin"
-                    android:text="@string/nc_titel"
+                    android:text="@string/nc_ort_ordner"
                     android:textSize="@dimen/normal_text_size" />
             </LinearLayout>
 

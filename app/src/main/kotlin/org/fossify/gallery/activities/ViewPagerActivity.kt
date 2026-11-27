@@ -1320,7 +1320,7 @@ class ViewPagerActivity : BaseViewerActivity(), ViewPager.OnPageChangeListener, 
         val isRandomSorting = config.getFolderSorting(mDirectory) and SORT_BY_RANDOM != 0
         if (!isRandomSorting || isExternalIntent()) {
             GetMediaAsynctask(applicationContext, mDirectory, isPickImage = false, isPickVideo = false, showAll = mShowAll) {
-                gotMedia(it, refetchViewPagerPosition = refetchPosition)
+                gotMedia(nurDieseDatei(it), refetchViewPagerPosition = refetchPosition)
             }.execute()
         }
     }
@@ -1539,5 +1539,16 @@ class ViewPagerActivity : BaseViewerActivity(), ViewPager.OnPageChangeListener, 
 
     private fun isExternalIntent(): Boolean {
         return !intent.getBooleanExtra(IS_FROM_GALLERY, false)
+    }
+
+    /**
+     * Rosenweg (Stefan 27.11.2026: nur die Fotos der Nextcloud): "Mit Galerie oeffnen" aus einer anderen
+     * App zeigt nur diese eine Datei, nicht die Nachbarn im lokalen Ordner (kein Durchstoebern).
+     */
+    private fun nurDieseDatei(items: ArrayList<ThumbnailItem>): ArrayList<ThumbnailItem> {
+        if (intent.extras?.containsKey(IS_VIEW_INTENT) != true || !isExternalIntent()) return items
+        val diese = items.filter { it is Medium && it.path == mPath }
+        // noch nicht in der Mediensammlung: bei der schon gezeigten Datei bleiben (sonst schloesse die Ansicht)
+        return ArrayList(diese.ifEmpty { mMediaFiles.filter { it.path == mPath } })
     }
 }
