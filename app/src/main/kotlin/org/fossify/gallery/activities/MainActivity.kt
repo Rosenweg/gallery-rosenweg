@@ -1,6 +1,5 @@
 package org.fossify.gallery.activities
 
-import org.fossify.gallery.helpers.alsOrtChip
 import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
@@ -145,6 +144,7 @@ import org.fossify.gallery.interfaces.DirectoryOperationsListener
 import org.fossify.gallery.jobs.NewPhotoFetcher
 import org.fossify.gallery.models.Directory
 import org.fossify.gallery.models.Medium
+import org.fossify.gallery.rosenweg.NcAuswahl
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -155,8 +155,6 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
     override var isSearchBarEnabled = true
     
     companion object {
-        /** Rosenweg: aus der Nextcloud-Ansicht "Telefon" gewaehlt - nicht wieder umleiten. */
-        const val ROSENWEG_TELEFON_ANSICHT = "rosenweg_telefon_ansicht"
         private const val PICK_MEDIA = 2
         private const val PICK_WALLPAPER = 3
         private const val LAST_MEDIA_CHECK_PERIOD = 3000L
@@ -230,30 +228,12 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
                 || mIsGetAnyContentIntent
                 || mIsSetWallpaperIntent
 
+        // Rosenweg (Stefan 27.11.2026: "Auf privaten Telefonen nur die Fotos von Nextcloud anzeigen"):
+        // die Galerie ist auf jedem Geraet die Nextcloud-Ansicht, auch "Foto auswaehlen" fuer andere Apps.
+        if (zurNextcloud()) return
+
         setupOptionsMenu()
         refreshMenuItems()
-
-        // Rosenweg: Fotos aus der Nextcloud (Regel 6); nicht beim Auswaehlen fuer andere Apps
-        binding.rwOrte.beVisibleIf(!mIsThirdPartyIntent)
-        binding.rwOrtNextcloud.setOnClickListener {
-            startActivity(Intent(this, NextcloudGalerieActivity::class.java))
-        }
-        // Stefan 25.11.2026: mit Rosenweg Geraet nur die Nextcloud (lokal ist nur Zwischenspeicher);
-        // ohne Geraet startet die Nextcloud-Ansicht, wenn ein Zugang da ist - "Telefon" fuehrt zurueck.
-        if (savedInstanceState == null && !mIsThirdPartyIntent && !intent.getBooleanExtra(ROSENWEG_TELEFON_ANSICHT, false)) {
-            val geraet = ch.rosenweg4303.cloud.RosenwegAnmeldung.geraetDa(this)
-            if (geraet || ch.rosenweg4303.cloud.Ablage.webDav(this) != null) {
-                startActivity(Intent(this, NextcloudGalerieActivity::class.java))
-                if (geraet) {
-                    finish()
-                    return
-                }
-            }
-        }
-        if (savedInstanceState == null && !mIsThirdPartyIntent) {
-            ch.rosenweg4303.cloud.Hinweis.beimErstenStart(this, "Deine Fotos und Videos aus der Nextcloud")
-            ch.rosenweg4303.cloud.Einstellungen.abgleichen(this) { recreate() }
-        }
 
         setupEdgeToEdge(
             padBottomImeAndSystem = listOf(binding.directoriesGrid)
@@ -295,18 +275,38 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
         }
 
         // just request the permission, tryLoadGallery will then trigger in onResume
-        // Rosenweg: ohne Anmeldung erst nach dem Anmeldeschirm fragen (onResume)
-        if (!rosenwegAnmeldungNoetig()) handleMediaPermissions()
+        handleMediaPermissions()
     }
 
     /**
-     * Rosenweg (Stefan 26.11.2026): auf dem eigenen Handy ist die App ohne Anmeldung nicht nutzbar,
-     * es kommt der gemeinsame Anmeldeschirm (commons-rosenweg: Karte oder Rosenweg-Konto, "Zurueck"
-     * schliesst die App). Geteilte Telefone (Rosenweg Geraet): nie, dort gilt dessen Anmeldung.
-     * Nicht beim Auswaehlen fuer andere Apps (Foto auswaehlen, Hintergrund) - das geht ohne Nextcloud.
+     * Rosenweg (Stefan 27.11.2026): die lokale Ordneransicht gibt es nicht mehr. Anschauen geht in die
+     * Nextcloud-Ansicht (dort auch der Anmeldeschirm ohne Anmeldung, Stefan 26.11.2026). "Foto
+     * auswaehlen" fuer andere Apps (PICK / GET_CONTENT) ebenfalls - mit [NcAuswahl] und
+     * FLAG_ACTIVITY_FORWARD_RESULT, das Ergebnis geht direkt an die aufrufende App. Hintergrundbild:
+     * SetWallpaperActivity waehlt selbst ueber ACTION_PICK (also auch aus der Nextcloud).
      */
-    private fun rosenwegAnmeldungNoetig() =
-        !mIsThirdPartyIntent && ch.rosenweg4303.cloud.RosenwegAnmeldung.anmeldungNoetig(this)
+    private fun zurNextcloud(): Boolean {
+        val ziel = if (mIsSetWallpaperIntent) {
+            Intent(this, SetWallpaperActivity::class.java)
+        } else {
+            Intent(this, NextcloudGalerieActivity::class.java)
+        }
+        if (mIsThirdPartyIntent && !mIsSetWallpaperIntent) {
+            val schreiben = intent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0
+            @Suppress("DEPRECATION")
+            val ausgabe = if (schreiben) intent.getParcelableExtra<Uri>(MediaStore.EXTRA_OUTPUT) else null
+            NcAuswahl(
+                fotos = mIsPickImageIntent || mIsGetImageContentIntent || mIsGetAnyContentIntent,
+                videos = mIsPickVideoIntent || mIsGetVideoContentIntent || mIsGetAnyContentIntent,
+                mehrere = mAllowPickingMultiple,
+                ausgabe = ausgabe,
+            ).extras(ziel)
+        }
+        if (mIsThirdPartyIntent) ziel.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
+        startActivity(ziel)
+        finish()
+        return true
+    }
 
     private fun handleMediaPermissions(callback: (() -> Unit)? = null) {
         requestMediaPermissions(enableRationale = true) {
@@ -325,10 +325,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
 
     override fun onResume() {
         super.onResume()
-        if (rosenwegAnmeldungNoetig() && ch.rosenweg4303.cloud.RosenwegAnmeldeSchirm.zeigenFallsNoetig(this, nextcloud = true)) return
         updateMenuColors()
-        binding.rwOrtTelefon.alsOrtChip(aktiv = true, symbol = org.fossify.commons.R.drawable.ic_phone_vector)
-        binding.rwOrtNextcloud.alsOrtChip(aktiv = false)
         config.isThirdPartyIntent = false
         mDateFormat = config.dateFormat
         mTimeFormat = getTimeFormat()
@@ -880,7 +877,7 @@ class MainActivity : SimpleActivity(), DirectoryOperationsListener {
         }
 
         (binding.directoriesRefreshLayout.layoutParams as RelativeLayout.LayoutParams)
-            .addRule(RelativeLayout.BELOW, R.id.rw_orte) // Rosenweg: unter den Chips Telefon/Nextcloud
+            .addRule(RelativeLayout.BELOW, R.id.rw_orte) // Rosenweg: Platzhalter (frueher Chips Telefon/Nextcloud)
     }
 
     private fun setupGridLayoutManager() {

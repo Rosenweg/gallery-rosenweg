@@ -163,6 +163,15 @@ class MediaActivity : SimpleActivity(), MediaOperationsListener {
             mAllowPickingMultiple = getBooleanExtra(Intent.EXTRA_ALLOW_MULTIPLE, false)
         }
 
+        // Rosenweg (Stefan 27.11.2026): keine lokale Ordneransicht mehr - alte Verknuepfungen auf
+        // Ordner (Startbildschirm) fuehren in die Nextcloud-Ansicht.
+        val fuerAndereApp = mIsGetImageIntent || mIsGetVideoIntent || mIsGetAnyIntent
+        if (!fuerAndereApp && !isSetWallpaperIntent()) {
+            startActivity(Intent(this, NextcloudGalerieActivity::class.java))
+            finish()
+            return
+        }
+
         binding.mediaRefreshLayout.setOnRefreshListener { getMedia() }
         try {
             mPath = intent.getStringExtra(DIRECTORY) ?: ""

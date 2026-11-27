@@ -281,6 +281,7 @@
 
         <activity
             android:name=".activities.WidgetConfigureActivity"
+            android:enabled="false"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/MyWidgetConfigTheme">
@@ -294,8 +295,7 @@
             android:name=".activities.NextcloudGalerieActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
-            android:label="@string/nc_titel"
-            android:parentActivityName=".activities.MainActivity" />
+            android:label="@string/nc_titel" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -315,8 +315,10 @@
             </intent-filter>
         </receiver>
 
+        <!-- Rosenweg (27.11.2026): das Ordner-Widget zeigt lokale Fotos - aus, die Galerie zeigt nur die Nextcloud -->
         <receiver
             android:name=".helpers.MyWidgetProvider"
+            android:enabled="false"
             android:exported="true"
             android:icon="@drawable/img_widget_preview"
             android:label="@string/folder">
