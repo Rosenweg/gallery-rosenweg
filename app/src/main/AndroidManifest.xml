@@ -24,9 +24,9 @@
         android:name="android.permission.MANAGE_MEDIA"
         tools:ignore="ProtectedPermissions" />
 
-    <uses-permission
-        android:name="android.permission.ACCESS_NETWORK_STATE"
-        tools:node="remove" />
+    <!-- Rosenweg: ACCESS_NETWORK_STATE NICHT entfernen (Fossify tat es) - der Rosenweg Updater plant
+         seine taegliche Pruefung mit WorkManager und Netz-Bedingung; ab Android 14 verlangt
+         JobScheduler dafuer dieses Recht (sonst SecurityException, keine Pruefung) -->
 
     <uses-permission
         android:name="android.permission.CAMERA"
